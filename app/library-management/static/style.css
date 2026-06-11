@@ -1,0 +1,5 @@
+/* PIMIS Library Management System — custom styles */
+body        { padding-bottom: 60px; background-color: #f8f9fa; }
+.navbar     { box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+.card       { border-radius: 12px; }
+.table      { background: white; }

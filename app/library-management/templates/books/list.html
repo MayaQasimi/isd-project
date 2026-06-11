@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Book Catalog{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="bi bi-journals"></i> Book Catalog</h2>
+  {% if session.role == 'admin' %}
+  <a href="{{ url_for('books_add') }}" class="btn btn-dark">
+    <i class="bi bi-plus-lg"></i> Add Book
+  </a>
+  {% endif %}
+</div>
+
+<form class="d-flex mb-3" method="GET">
+  <input name="q" value="{{ q }}" class="form-control me-2" placeholder="Search by title, author, or ISBN...">
+  <button class="btn btn-outline-secondary" type="submit">Search</button>
+  {% if q %}<a href="{{ url_for('books_list') }}" class="btn btn-outline-danger ms-1">Clear</a>{% endif %}
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Title</th><th>Author</th><th>ISBN</th><th>Genre</th><th>Available</th>
+        {% if session.role == 'admin' %}<th>Actions</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td>{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td class="text-muted small">{{ book.isbn }}</td>
+        <td class="text-muted small">{{ book.genre }}</td>
+        <td>
+          <span class="badge bg-{{ 'success' if book.available_copies > 0 else 'danger' }}">
+            {{ book.available_copies }} / {{ book.total_copies }}
+          </span>
+        </td>
+        {% if session.role == 'admin' %}
+        <td>
+          <a href="{{ url_for('books_edit', id=book.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+          <form method="POST" action="{{ url_for('books_delete', id=book.id) }}" class="d-inline"
+                onsubmit="return confirm('Delete this book?')">
+            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-muted text-center">No books found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
